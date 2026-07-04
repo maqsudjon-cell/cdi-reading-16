@@ -161,6 +161,18 @@ mark.uhl{background:var(--hl);padding:0;border-radius:1px;cursor:pointer;color:i
 .tick{font-weight:900;text-align:center;font-size:20px}.tick.g{color:var(--ok)}.tick.b{color:var(--bad)}
 @media(max-width:900px){.tmain{flex-direction:column}.pp,.qp{flex:none;height:50%}.rszr{display:none}.info-grid,.score-hero,.stats,.pcards,.rev-stats{grid-template-columns:1fr}.ans-row{grid-template-columns:1fr}.part-cell.collapsed{min-width:90px;padding:0 8px}}
 ::-webkit-scrollbar{width:7px;height:7px}::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+
+/* --- mobile passage/questions toggle (cdi 11-16) --- */
+.mtoggle{display:none}
+@media(max-width:900px){
+  .mtoggle{display:flex;gap:8px;padding:8px 12px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0}
+  .mtoggle button{flex:1;padding:11px 0;border:1px solid var(--border);background:var(--bg);color:var(--muted);font-weight:700;font-size:14px;border-radius:10px;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent}
+  .mtoggle button.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+  .tmain.mv-p .qp{display:none}
+  .tmain.mv-p .pp{height:auto;flex:1 1 auto;min-height:0}
+  .tmain.mv-q .pp{display:none}
+  .tmain.mv-q .qp{height:auto;flex:1 1 auto;min-height:0}
+}
 </style>
 </head>
 <body>
@@ -197,6 +209,7 @@ mark.uhl{background:var(--hl);padding:0;border-radius:1px;cursor:pointer;color:i
       <button id="setToggle" class="icon-btn" title="Display settings"><svg viewBox="0 0 16 16"><path d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/></svg></button>
     </div>
   </header>
+<div class="mtoggle" id="mtoggle"><button type="button" id="mvpBtn" onclick="setMV('p')">Passage</button><button type="button" id="mvqBtn" onclick="setMV('q')">Questions</button></div>
   <div class="tmain">
     <div class="pp" id="pp"><div class="pphdr"><div><div class="pptitle" id="pp-title">Passage 1</div><div class="ppql" id="pp-qr">Questions 1&ndash;13</div></div></div><div class="pbody" id="pbody"></div></div>
     <div class="rszr" id="rszr"></div>
@@ -621,5 +634,12 @@ function restart(){location.reload()}
 </script>
 <!-- IELTS Hub: name modal + footer + auto score-logging. One line per page, forever. -->
 <script src="https://maqsudjon-cell.github.io/ielts-hub/js/test-page-auto.js" defer></script>
+<script>
+/* mobile-only passage/questions view toggle; desktop unaffected */
+function setMV(m){var t=document.querySelector('.tmain');if(!t)return;t.classList.remove('mv-p','mv-q');t.classList.add(m==='p'?'mv-p':'mv-q');var p=document.getElementById('mvpBtn'),q=document.getElementById('mvqBtn');if(p)p.classList.toggle('active',m==='p');if(q)q.classList.toggle('active',m==='q');}
+(function(){var mq=window.matchMedia('(max-width:900px)');function init(){var t=document.querySelector('.tmain');if(!t)return;if(mq.matches){if(!t.classList.contains('mv-p')&&!t.classList.contains('mv-q'))setMV('q');}else{t.classList.remove('mv-p','mv-q');}}
+document.addEventListener('DOMContentLoaded',init);window.addEventListener('resize',init);
+document.addEventListener('click',function(e){if(!mq.matches)return;var b=e.target.closest&&e.target.closest('.qbtn');if(b)setMV('q');},true);})();
+</script>
 </body>
 </html>
